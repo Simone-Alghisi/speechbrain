@@ -39,6 +39,7 @@ setup(
         "sentencepiece",
         "torch>=1.9",
         "torchaudio",
+        "torchvision",
         "tqdm",
         "huggingface_hub",
     ],
