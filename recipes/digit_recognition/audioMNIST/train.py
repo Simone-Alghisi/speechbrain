@@ -71,6 +71,11 @@ class SpkIdBrain(sb.Brain):
         # batch. This is more memory-demanding, but helps to improve the
         # performance. Change it if you run OOM.
         if stage == sb.Stage.TRAIN:
+            if hasattr(self.modules, "env_corrupt"):
+                wavs_noise = self.modules.env_corrupt(wavs, lens)
+                wavs = torch.cat([wavs, wavs_noise], dim=0)
+                lens = torch.cat([lens, lens])
+
             if hasattr(self.hparams, "augmentation"):
                 wavs = self.hparams.augmentation(wavs, lens)
 
@@ -137,7 +142,7 @@ class SpkIdBrain(sb.Brain):
         self.loss_metric = sb.utils.metric_stats.MetricStats(
             metric=sb.nnet.losses.nll_loss
         )
-        self.accuracy = self.hparams.accuracy
+        self.accuracy = self.hparams.accuracy()
 
         # Set up evaluation-only statistics trackers
         if stage != sb.Stage.TRAIN:
