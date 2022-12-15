@@ -44,6 +44,9 @@ ckpt_interval_minutes: 15 # save checkpoint every N min
 # Feature parameters
 n_mels: 40
 
+# Split
+train_size: 0.9
+
 # Training Parameters
 sample_rate: 16000
 number_of_epochs: 35

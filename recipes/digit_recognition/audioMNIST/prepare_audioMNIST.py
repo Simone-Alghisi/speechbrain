@@ -11,8 +11,8 @@ Authors:
 import os
 import json
 import shutil
-import random
 import logging
+from sklearn.model_selection import train_test_split
 from speechbrain.utils.data_utils import get_all_files, download_file
 from speechbrain.dataio.dataio import read_audio
 
@@ -26,7 +26,8 @@ def prepare_audio_mnist(
     save_json_train,
     save_json_valid,
     save_json_test,
-    train_ratio=0.9,
+    seed,
+    train_size=0.9,
 ):
     """
     Prepares the json files for the audio MNIST dataset.
@@ -43,10 +44,12 @@ def prepare_audio_mnist(
         Path where the validation data specification file will be saved.
     save_json_test : str
         Path where the test data specification file will be saved.
-    split_ratio: float
+    seed: float
+        A number used for reproducible output across multiple function calls.
+    split_size: float
         A single float indicating the ratio of data between original and validation:
-        the train ratio will be equal to train_ratio, while the valid ratio will be
-        equal to 1 - train_ratio.
+        the train ratio will be equal to train_size, while the valid ratio will be
+        equal to 1 - train_size.
 
     Example
     -------
@@ -73,8 +76,8 @@ def prepare_audio_mnist(
     extension = [".wav"]
     wav_list = get_all_files(train_folder, match_and=extension)
 
-    # Create splits based on MNIST guidelines and train_ratio
-    data_split = split_mnist_data(wav_list, train_ratio=train_ratio)
+    # Create splits based on MNIST guidelines and sklearn stratified train_test_split
+    data_split = split_mnist_data(wav_list, train_size=train_size, seed=seed)
 
     # Creating json files
     create_json(data_split["train"], save_json_train)
@@ -148,7 +151,7 @@ def check_folders(*folders):
     return True
 
 
-def split_mnist_data(wav_list, train_ratio):
+def split_mnist_data(wav_list, train_size, seed):
     """Splits the wav list into training, and test lists as suggested by MNIST.
     Then, it performs an additional random split on the training set to obtain the
     validation list.
@@ -157,10 +160,12 @@ def split_mnist_data(wav_list, train_ratio):
     ---------
     wav_lsit : list
         list of all the signals in the dataset
-    split_ratio: float
+    train_size: float
         A single float indicating the ratio of data between original and validation:
-        the train ratio will be equal to train_ratio, while the valid ratio will be
-        equal to 1 - train_ratio.
+        the train ratio will be equal to train_size, while the valid ratio will be
+        equal to 1 - train_size.
+    seed: float
+        A number used for reproducible output across multiple function calls.
 
     Returns
     ------
@@ -178,12 +183,22 @@ def split_mnist_data(wav_list, train_ratio):
         else:
             data_splits["train"].append(wav)
 
-    random.shuffle(data_splits["train"])
-    tot_snts = len(data_splits["train"])
+    labels = []
+    for wav_file in data_splits["train"]:
+        path_parts = wav_file.split(os.path.sep)
+        uttid, _ = os.path.splitext(path_parts[-1])
+        digit = int(uttid.split("_")[0])
+        labels.append(digit)
 
-    n_snts = int(tot_snts * (1 - train_ratio))
-    data_splits["valid"] = data_splits["train"][0:n_snts]
-    del data_splits["train"][0:n_snts]
+    train, valid = train_test_split(
+        data_splits["train"],
+        train_size=train_size,
+        random_state=seed,
+        stratify=labels,
+    )
+
+    data_splits["train"] = train
+    data_splits["valid"] = valid
 
     return data_splits
 
@@ -209,4 +224,4 @@ def download_audio_mnist(destination):
 
 
 if __name__ == "__main__":
-    prepare_audio_mnist("data", "train.json", "valid.json", "test.json")
+    prepare_audio_mnist("data", "train.json", "valid.json", "test.json", 1986)

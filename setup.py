@@ -36,6 +36,7 @@ setup(
         "numpy",
         "packaging",
         "scipy",
+        "scikit-learn",
         "sentencepiece",
         "torch>=1.9",
         "torchaudio",
