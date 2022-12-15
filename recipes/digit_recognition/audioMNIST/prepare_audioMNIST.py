@@ -54,7 +54,7 @@ def prepare_audio_mnist(
     Example
     -------
     >>> data_folder = '/path/to/audio_MNIST'
-    >>> prepare_audio_mnist(data_folder, 'train.json', 'valid.json', 'test.json')
+    >>> prepare_audio_mnist(data_folder, 'train.json', 'valid.json', 'test.json', seed)
     """
 
     # Check if this phase is already done (if so, skip it)
@@ -152,9 +152,9 @@ def check_folders(*folders):
 
 
 def split_mnist_data(wav_list, train_size, seed):
-    """Splits the wav list into training, and test lists as suggested by MNIST.
-    Then, it performs an additional random split on the training set to obtain the
-    validation list.
+    """Splits the wav list into training and test sets as suggested by MNIST.
+    Then, it performs an additional split on the training set to obtain the
+    validation set using scikit-learn train_test_split.
 
     Arguments
     ---------

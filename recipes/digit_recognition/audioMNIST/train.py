@@ -10,7 +10,7 @@ Brain class definition provides the details of what happens
 for each batch during training.
 
 The first time you run it, this script should automatically download
-and prepare the Mini Librispeech dataset for computation. Noise and
+and prepare the Audio MNIST dataset for computation. Noise and
 reverberation are automatically added to each sample from OpenRIR.
 
 Authors
@@ -239,7 +239,7 @@ def dataio_prep(hparams):
     @sb.utils.data_pipeline.takes("digit_id")
     @sb.utils.data_pipeline.provides("digit_id", "digit_id_encoded")
     def label_pipeline(digit_id):
-        """Defines the pipeline to process the input speaker label."""
+        """Defines the pipeline to process the input digit_id."""
         yield digit_id
         digit_id_encoded = label_encoder.encode_label_torch(digit_id)
         yield digit_id_encoded

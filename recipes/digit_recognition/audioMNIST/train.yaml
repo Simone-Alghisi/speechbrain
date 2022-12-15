@@ -83,9 +83,8 @@ mean_var_norm: !new:speechbrain.processing.features.InputNormalization
     norm_type: sentence
     std_norm: False
 
-# To design a custom model, either just edit the simple CustomModel
-# class that's listed here, or replace this `!new` call with a line
-# pointing to a different file you've defined.
+# As a classifier we consider a slightly modified version of a
+# ResNet. The standard configuration trains a ResNet18 model.
 classifier: !new:speechbrain.lobes.models.resnet.CustomResNet
     layers: [2, 2, 2, 2]
     n_classes: !ref <n_classes>

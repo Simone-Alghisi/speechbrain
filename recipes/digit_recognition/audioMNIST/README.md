@@ -1,31 +1,30 @@
-# Template for Speaker Identification
+# Recipy for Digit Recognition
+
+> Note:
+> - This work has been developed as an assignment to work on the SpeechBrain python library.
+> - The recipy has been developed starting from the speaker_id template. [For more information, please take a look into the "speaker-id from scratch" tutorial](https://colab.research.google.com/drive/1UwisnAjr8nQF3UnrkIJ4abBMAWzVwBMh?usp=sharing)
 
 This folder provides a working, well-documented example for training
-a speaker identification model from scratch, based on a few hours of
-data. The data we use is from Mini Librispeech + OpenRIR.
+a digit recognition model from scratch data. The data we use is from
+[Audio MNIST free spoken digit dataset](https://github.com/Jakobovski/free-spoken-digit-dataset) + OpenRIR.
 
 There are four files here:
 
 * `train.py`: the main code file, outlines the entire training process.
 * `train.yaml`: the hyperparameters file, sets all parameters of execution.
-* `custom_model.py`: A file containing the definition of a PyTorch module.
 * `mini_librispeech_prepare.py`: If necessary, downloads and prepares data manifests.
 
-To train the speaker-id model, just execute the following on the command-line:
+Instead, the model is available in `speechbrain/lobes/models`:
+* `resnet.py`: A file containing a modified version of TorchVision ResNet.
+
+To train the digit recognition model, just execute the following on the command-line:
 
 ```bash
 python train.py train.yaml
 ```
 
-This will automatically download and prepare the data manifest for mini
-librispeech, and then train a model with dynamically augmented samples.
+This will automatically download and prepare the data manifest for Audio 
+MNIST, and then train a model with dynamically augmented samples.
 
 More details about what each file does and how to make modifications
-are found within each file. The whole folder can be copied and used
-as a starting point for developing recipes doing classification tasks
-similar to speech speaker-id (e.g, language-id, emotion classification, ..).
-Please reach out to the SpeechBrain
-team if any errors are found or clarification is needed about how
-parts of the template work. Good Luck!
-
-[For more information, please take a look into the "speaker-id from scratch" tutorial](https://colab.research.google.com/drive/1UwisnAjr8nQF3UnrkIJ4abBMAWzVwBMh?usp=sharing)
+are found within each file. 
